@@ -8,7 +8,8 @@
 import SwiftUI
 
 @Observable
-class Employee {
+//by making employee class identifiable, it will make updates ore efficient (performance concern)
+class Employee: Identifiable, Hashable {
     var id: Int
     var firstName: String
     var lastName: String
@@ -17,5 +18,13 @@ class Employee {
         self.id = id
         self.firstName = firstName
         self.lastName = lastName
+    }
+    
+    static func == (lhs: Employee, rhs: Employee) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
 }

@@ -9,37 +9,31 @@ import SwiftUI
 
 struct EmployeeDetails: View {
     
-    @State private var employee: Employee?
+    @State var employee: Employee
     
     var body: some View {
+        @Bindable var empBinding = employee
+        
         VStack {
-            Text("\(employee?.id ?? 0)")
+            Text("\(employee.id)")
                 .font(.largeTitle)
                 .fontWeight(.bold)
-            Text("\(employee?.firstName ?? "") \(employee?.lastName ?? "")")
                 .font(.title)
-            if let empBinding = Binding($employee) {
-                TextField("First Name", text: empBinding.firstName)
+            TextField("First Name", text: $empBinding.firstName)
                     .font(Font.title)
                     .textFieldStyle(.roundedBorder)
                     .padding(20)
-                TextField("Last Name", text: empBinding.lastName)
+            TextField("Last Name", text: $empBinding.lastName)
                     .font(Font.title)
                     .textFieldStyle(.roundedBorder)
                     .padding(20)
             }
-        }
         .padding()
-        .task {
-            loadData()
         }
+        
     }
-    
-    func loadData() {
-        employee = Employee(id: 572, firstName: "Antonio", lastName: "Banderas")
-    }
-}
+    //no longer needed to load data since it will be handed to us 
 
 #Preview {
-    EmployeeDetails()
+    ContentView()
 }
