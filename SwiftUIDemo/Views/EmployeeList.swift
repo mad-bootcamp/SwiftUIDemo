@@ -13,8 +13,12 @@ struct EmployeeList: View {
     
     var body: some View {
         NavigationStack {
-            List(employees){ emp in
-                NavigationLink(emp.lastName, value: emp)
+            List {
+                ForEach(employees) { emp in
+                    EmployeeListItem(employee: emp)
+                }
+                .onDelete(perform: deleteItems)
+                .onMove(perform: moveItems)
             }
             .navigationTitle("Employees")
             .navigationDestination(for: Employee.self) {
@@ -25,13 +29,21 @@ struct EmployeeList: View {
                 Button(action: { }) {
                     Image(systemName: "plus")
                 }
-                .accessibilityLabel("Add new employee")
+                .accessibilityLabel("Press to add new employee")
             }
             
         }
         .task{
             loadData()
         }
+    }
+    
+    func deleteItems(at offsets: IndexSet){
+        employees.remove(atOffsets: offsets)
+    }
+    
+    func moveItems( from source: IndexSet, to destination: Int){
+        employees.move(fromOffsets: source, toOffset: destination)
     }
         
         func loadData() {

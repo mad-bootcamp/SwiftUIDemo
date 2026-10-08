@@ -9,7 +9,14 @@ import SwiftUI
 
 struct EmployeeDetails: View {
     
+    
     @State var employee: Employee
+    
+    @State private var colorIndex = 0
+    
+    @State private var scale = 1.0
+    
+    private let colors = [Color.blue, .red, .yellow, .orange, .green]
     
     var body: some View {
         @Bindable var empBinding = employee
@@ -19,6 +26,9 @@ struct EmployeeDetails: View {
                 .font(.largeTitle)
                 .fontWeight(.bold)
                 .font(.title)
+                .onTapGesture {
+                    colorIndex = Int.random(in: 0..<colors.count)
+                }
             TextField("First Name", text: $empBinding.firstName)
                     .font(Font.title)
                     .textFieldStyle(.roundedBorder)
@@ -27,8 +37,20 @@ struct EmployeeDetails: View {
                     .font(Font.title)
                     .textFieldStyle(.roundedBorder)
                     .padding(20)
+            Image(systemName: "volleyball.fill")
+                .foregroundColor(.blue)
+                .frame(width: 80, height: 80)
+                .scaleEffect(scale)
+                .onAppear {
+                    let baseAnimation = Animation.linear(duration: 1.3)
+                    let repeatingAnimation = baseAnimation.repeatForever(autoreverses: true)
+                    withAnimation(repeatingAnimation) {
+                        scale = 2.0
+                    }
+                }
             }
         .padding()
+        .background(colors[colorIndex].opacity(0.1))
         }
         
     }

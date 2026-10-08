@@ -6,12 +6,33 @@
 //
 
 import SwiftUI
+internal import CoreData
 
 @main
 struct SwiftUIDemoApp: App {
+    
+    let kazooAPIURL = "https://kazoopromotions.com/api"
+    let awAPIURL = "https://api.bootcampcentral.com/api"
+    @StateObject var authStatus = AuthStatus()
+    
+    let persistenceController = PersistenceController.shared
+    
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if authStatus.isLoggedIn {
+                ContentView()
+                
+                //configure custom dependency injection
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                    .environment(\.artistRepository, RemoteArtistRepository(urlBase: kazooAPIURL, authStatus: authStatus))
+                    .environment(\.boardMember, RemoteBoardMemberRepository(urlBase: kazooAPIURL, authStatus: authStatus))
+                    .environment(\.productRepository, TieredCachedProductRepository(authStatus: authStatus, urlBase: awAPIURL, context: persistenceController.container.viewContext))
+                    .environmentObject(authStatus)
+            }else {
+                LoginView()
+                    .environmentObject(authStatus)
+            }
         }
     }
 }
